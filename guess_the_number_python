@@ -1,0 +1,83 @@
+# template for "Guess the number" mini-project
+# input will come from buttons and an input field
+# all output for the game will be printed in the console
+import simplegui
+import math
+import random
+
+
+
+# initialize global variables used in your code
+
+
+number = 0
+lim = 7
+turns = 0
+
+
+
+
+# define event handlers for control panel
+def range100():
+    # button that changes range to range [0,100) and restarts
+    global number, lim, turns
+    turns = 0
+    lim = 7
+
+    number = random.randrange(0,101)
+    print "Guess my number! 0 - 100"
+    print "You get ", lim," guesses."
+
+def range1000():
+    # button that changes range to range [0,1000) and restarts
+    global number, lim, turns
+    turns = 0
+    lim = 10
+    
+    number = random.randrange(0,1001)
+    print "Guess my number! 0 - 1000"
+    print "You get ", lim," guesses."
+
+def input_guess(guess):
+    #guesses remaining
+    global number, turns, lim
+    turns = turns + 1
+    remain = lim - turns
+    guess = int(guess)
+    print "You guessed", guess
+    
+    if remain <= 0:
+        print "You ran out of guesses"
+        print "My number was ",number
+        print "Click a Range button to try again"
+    elif number == guess:
+        print "You guessed correctly!\n"
+        range100()
+    elif number < guess:
+        print "Lower\n"
+        print "You have",remain ," guesses remaining."
+    elif number > guess:
+        print "Higher\n"
+        print "You have",remain ," guesses remaining."    
+   
+        
+    
+
+            
+    
+    
+    
+# create frame
+f = simplegui.create_frame("Guess the number", 200, 200)
+
+
+# register event handlers for control elements
+f.add_button("Range 0 - 100", range100, 200)
+f.add_button("Range 0 - 1000", range1000, 200)
+f.add_input("Guess", input_guess, 200)
+
+range100()
+
+f.start()
+
+# always remember to check your completed program against the grading rubric
