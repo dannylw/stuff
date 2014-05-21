@@ -1,4 +1,4 @@
-import simpleguitk as simplegui
+import simplegui tk as simplegui
 import math
 import random
 
@@ -72,11 +72,11 @@ asteroid_image = simplegui.load_image("http://commondatastorage.googleapis.com/c
 
 # animated explosion - explosion_orange.png, explosion_blue.png, explosion_blue2.png, explosion_alpha.png
 EXPLOSION_CENTER = [64, 64]
-EXPLOSION_SIZE = [100, 100]
+EXPLOSION_SIZE = [110, 100]
 EXPLOSION_DIM = [17, 1]
-explosion_info = ImageInfo([64, 64], [128, 128], 17, 500, True)
-explosion_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/explosion_alpha.png")
-
+explosion_info = ImageInfo([64, 64], [128, 128], 17, 1000, True)
+explosion_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/lathrop/explosion_orange.png")
+#explosion_image = simplegui.load_image("http://commondatastorage.googleapis.com/codeskulptor-assets/explosion.hasgraphics.png")
 # sound assets purchased from sounddogs.com, please do not redistribute
 # .ogg versions of sounds are also available, just replace .mp3 by .ogg
 soundtrack = simplegui.load_sound("http://commondatastorage.googleapis.com/codeskulptor-assets/sounddogs/soundtrack.mp3")
@@ -138,6 +138,8 @@ class Ship:
         distance = dist(self.pos,obj2.pos)
         if distance < (self.radius+obj2.radius):
             rock_remove.add(obj2)
+            explosion_group.add(obj2)
+            explosion_group.add(self)
             lives -=1
             return True
        
@@ -238,6 +240,10 @@ def click(pos):
     inheight = (center[1] - size[1] / 2) < pos[1] < (center[1] + size[1] / 2)
     if (not started) and inwidth and inheight:
         started = True
+        soundtrack.play()
+    
+        
+       
 
 def draw(canvas):
     global time, started, lives, score
@@ -246,7 +252,7 @@ def draw(canvas):
     time += 1
     center = debris_info.get_center()
     size = debris_info.get_size()
-    wtime = (time / 8) % center[0]
+    wtime = (time / 2) % center[0]
     canvas.draw_image(nebula_image, nebula_info.get_center(), nebula_info.get_size(), [WIDTH / 2, HEIGHT / 2], [WIDTH, HEIGHT])
     canvas.draw_image(debris_image, [center[0] - wtime, center[1]], [size[0] - 2 * wtime, size[1]],
                                 [WIDTH / 2 + 1.25 * wtime, HEIGHT / 2], [WIDTH - 2.5 * wtime, HEIGHT])
@@ -287,7 +293,7 @@ def draw(canvas):
         rock.update()
     for missile in missile_group:
         missile.lifespan +=1
-        if missile.lifespan > missile_info.lifespan*2:
+        if missile.lifespan > missile_info.lifespan*2.2:
             missile_remove.add(missile)
         missile.update()  
        
@@ -304,6 +310,7 @@ def draw(canvas):
         started = False
         lives = 3
         rock_group.difference_update(rock_group)
+        soundtrack.rewind()
        
 # timer handler that spawns a rock
 def rock_spawner():
